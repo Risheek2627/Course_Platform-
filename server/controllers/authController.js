@@ -1,7 +1,7 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
-const dotenv = require("dotenv")
-dotenv.config()
+const dotenv = require("dotenv");
+dotenv.config();
 
 const signup = async (req, res) => {
   try {
@@ -20,7 +20,15 @@ const signup = async (req, res) => {
 
     await user.save();
 
-    return res.status(200).json({ message: "User added successfully" });
+    return res.status(200).json({
+      message: "User added successfully",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: err.message });
@@ -46,10 +54,19 @@ const login = async (req, res) => {
     const isMatch = await user.matchPassword(password);
     if (!isMatch) return res.status(400).json({ msg: "Invalid credentials" });
 
-    const token   = jwt.sign({userId : user._id , role : user.role},{ process.env.jwt_secret})
-  } catch (error) {}
+    const token = jwt.sign(
+      { userId: user._id, role: user.role },
+      process.env.jwt_secret,
+      { expiresIn: "1d" }
+    );
+
+    return res
+      .status(200)
+      .json({ message: "Logined Successfully", token: token });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: err.message });
+  }
 };
 
-
-
-module.exports = {signup , login}
+module.exports = { signup, login };
