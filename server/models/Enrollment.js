@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const User = require("./User");
+const Course = require("./Course");
 
 const enrollmentSchema = new mongoose.Schema(
   {

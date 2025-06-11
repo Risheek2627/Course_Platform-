@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const Course = require("./Course");
+
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -22,6 +24,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ["student", "admin", "instructor"],
       default: "student",
+    },
+    enrolledCourses: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: Course,
     },
   },
   { timestamps: true }
